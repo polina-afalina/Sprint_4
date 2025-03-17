@@ -1,24 +1,12 @@
 package ru.qa_scooter.praktikum_services;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class OrderFlowTest {
-    /* Поля */
-    private WebDriver driver;
-    private HomePageSamokat homePage;
-    private OrderPageSamokat orderPage;
+public class OrderFlowTest extends BaseTest{
     // Поля параметров
     private final String buttonPosition;
     private final String name;
@@ -59,46 +47,14 @@ public class OrderFlowTest {
         };
     }
 
-    /* Настройка теста */
-    @Before
-    public void setUp() {
-        // Получаем значение параметра "browser" (по умолчанию Chrome)
-        String browser = System.getProperty("browser", "chrome");
-        // Команды для запуска тестов в консоли:
-        // mvn test -Dbrowser=firefox
-        // mvn test -Dbrowser=chrome
-        switch (browser.toLowerCase()) {
-            case "firefox":
-                FirefoxOptions firefoxOptions = new FirefoxOptions();
-                // Отключаем прокси в Firefox, чтобы предотвратить ошибку "Прокси-сервер отказывается принимать соединения"
-                firefoxOptions.addPreference("network.proxy.type", 0);
-                driver = new FirefoxDriver(firefoxOptions);
-                break;
-            case "chrome":
-            default:
-                ChromeOptions chromeOptions = new ChromeOptions();
-                // Отключаем прокси в Chrome
-                chromeOptions.addArguments("--no-proxy-server");
-                chromeOptions.addArguments("--proxy-server='direct://'");
-                chromeOptions.addArguments("--proxy-bypass-list=*");
-                driver = new ChromeDriver(chromeOptions);
-                break;
-        }
-
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-        homePage = new HomePageSamokat(driver);
-        orderPage = new OrderPageSamokat(driver);
-        homePage.clickAcceptCookiesButton();
-    }
-
     /* Параметризованный тест */
     @Test
     public void testOrderProcess() {
         // Проверяем, что обе кнопки входа открывают страницу заказа
         homePage.clickOrderButton(buttonPosition);
-        assertEquals("По клику на кнопку 'Заказать' не открылась страница заказа!", "https://qa-scooter.praktikum-services.ru/order", driver.getCurrentUrl());
+        assertEquals("По клику на кнопку 'Заказать' не открылась страница заказа!", OrderPageSamokat.ORDERPAGE_URL, driver.getCurrentUrl());
 
-        // Проверяем, что после отправки первой части формы октрывается вторая часть формы
+        // Проверяем, что после отправки первой части формы открывается вторая часть формы
         orderPage.fillFormForWhom(name, lastName, address, metroStation, phoneNumber);
         // Проверяем, что найденных элементов будет не ноль, чтобы тест не упал при отсутствии элемента
         boolean isFormForWhomCompleted = !driver.findElements(orderPage.aboutRentTitle).isEmpty();
@@ -110,16 +66,10 @@ public class OrderFlowTest {
         boolean isFormAboutRentCompleted = !driver.findElements(orderPage.orderToBeConfirmedText).isEmpty();
         assertTrue("После отправки формы 'Про аренду' не появилось модальное окно для подтверждения заказа!", isFormAboutRentCompleted);
 
-        // Проверяем, что после клика по кнопке 'Да' видно сообщение об успешном создании заказа
+        // Проверяем, что после клика по кнопке "Да" видно сообщение об успешном создании заказа
         orderPage.clickOrderModalOrderButton();
         // Проверяем, что найденных элементов будет не ноль, чтобы тест не упал при отсутствии элемента
         boolean isOrderConfirmed = !driver.findElements(orderPage.orderConfirmedText).isEmpty();
         assertTrue("После подтверждения заказа не появилось сообщение об успешном создании заказа!", isOrderConfirmed);
-    }
-
-    /* Завершение теста */
-    @After
-    public void tearDown() {
-        driver.quit();
     }
 }

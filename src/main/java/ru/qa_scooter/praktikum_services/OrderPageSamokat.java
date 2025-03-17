@@ -1,13 +1,16 @@
 package ru.qa_scooter.praktikum_services;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
 import java.util.List;
 
 public class OrderPageSamokat {
     /* Поля */
     // Driver
     private final WebDriver driver;
+    static final String ORDERPAGE_URL = "https://qa-scooter.praktikum-services.ru/order";
 
     // Форма "Для кого самокат"
     // Поле "Имя"
@@ -36,9 +39,9 @@ public class OrderPageSamokat {
     private final By rentDurationInput = By.xpath(".//div[text()='* Срок аренды']");
     // Опция дропдауна "Срок аренды"
     private final By rentDurationOptions = By.xpath(".//div[@class = 'Dropdown-menu']/div");
-    // Чекбокс "Черный жемчуг" в поле Цвет самоката
+    // Чекбокс "Черный жемчуг" в поле "Цвет самоката"
     private final By colorCheckboxBlack = By.id("black");
-    // Чекбокс "Серая безысходность" в поле Цвет самоката
+    // Чекбокс "Серая безысходность" в поле "Цвет самоката"
     private final By colorCheckboxGrey = By.id("grey");
     // Поле "Комментарий для курьера"
     private final By commentInput = By.xpath(".//input[@placeholder='Комментарий для курьера']");
