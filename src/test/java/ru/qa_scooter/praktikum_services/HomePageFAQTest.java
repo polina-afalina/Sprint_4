@@ -18,7 +18,7 @@ public class HomePageFAQTest extends BaseTest{
         // Считаем, сколько всего ответов в разделе "Вопросы о важном"
         int answersCount = homePage.getFaqAnswers().size();
         // Проверяем, что количество ответов соответствует ожидаемому
-        assertEquals("Количество вопросов не совпадает с ожидаемым!", homePage.expectedAnswers.length, questionsCount);
+        assertEquals("Количество вопросов не совпадает с ожидаемым!", homePage.expectedAnswers.length, answersCount);
 
         // Перебираем вопросы в цикле
         for (int i = 0; i < questionsCount; i++) {
